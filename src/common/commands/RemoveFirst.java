@@ -29,9 +29,13 @@ public class RemoveFirst extends Command {
     @Override
     public String execute(UserInterface ui, StorageInteraction storageInteraction) throws IOException {
         int size1 = storageInteraction.getSize();
-        storageInteraction.removeFirst();
-        int size2 = storageInteraction.getSize();
-        if (size2 < size1) return ("Операция успешно выполнена");
-        else return ("Упс, что-то пошло не так.");
+        try {
+            storageInteraction.removeFirst();
+            int size2 = storageInteraction.getSize();
+            if (size2 < size1) return ("Операция успешно выполнена");
+            else return ("Упс, что-то пошло не так.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        } return "Коллекция не полна.";
     }
 }

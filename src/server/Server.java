@@ -82,21 +82,21 @@ public class Server implements Runnable {
             return CommandCenter.getInstance().executeCommand(userInterface, "save", storageInteraction);
         } else {
             if (cmd.getArgumentAmount() == 0) {
-                logger.log(Level.INFO, "Выполнение команды без аргументов" + "\n");
+                logger.log(Level.INFO, "Выполнение команды без аргументов - " + cmd.getCmdLine() + "\n");
                 return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction);
             }
             if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
-                logger.log(Level.INFO, "Выполнение команды с аргументом" + "\n");
+                logger.log(Level.INFO, "Выполнение команды с аргументом - " + cmd.getCmdLine() + "\n");
                 argument = cmd.getArgument();
                 return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction);
             }
             if (cmd.getArgumentAmount() == 1 && cmd.getNeedsObject()) {
-                logger.log(Level.INFO, "Выполнение команды с аргументом-объектом" + "\n");
+                logger.log(Level.INFO, "Выполнение команды с аргументом-объектом - " + cmd.getCmdLine() + "\n");
                 vehicle = cmd.getObject();
                 return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction, vehicle);
             }
             if (cmd.getArgumentAmount() == 2 && cmd.getNeedsObject()) {
-                logger.log(Level.INFO, "Выполнение команды с аргументом и аргументом-объектом" + "\n");
+                logger.log(Level.INFO, "Выполнение команды с аргументом и аргументом-объектом - " + cmd.getCmdLine() + "\n");
                 argument = cmd.getArgument();
                 vehicle = cmd.getObject();
                 return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction, vehicle);

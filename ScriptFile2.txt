@@ -1,3 +1,13 @@
 info
+remove_first
 show
+show
+add
+2
+2
+2
+2
+2
+2
+PLASMA
 execute_script ScriptFile.txt

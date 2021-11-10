@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidParameterException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 /**
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
  */
 public class ExecuteScript extends Command {
 
-    private static final HashSet<String> paths = new HashSet<>();
+    private static final ArrayList<String> paths = new ArrayList<>();
 
     /**
      * Стандартный конструктор, добавляющий строку вызова и описание команды.
@@ -46,6 +46,7 @@ public class ExecuteScript extends Command {
 
 //        ScriptReader.scriptRead(arguments);
 
+        StringBuilder result = new StringBuilder();
         Path p = Paths.get(arguments);
         boolean exists = Files.exists(p);
         boolean isDirectory = Files.isDirectory(p);
@@ -65,44 +66,50 @@ public class ExecuteScript extends Command {
                     }
                     Command cmd = CommandCenter.getInstance().getCmdCommand(cmdLine);
                     if (cmd.getArgumentAmount() == 0) {
-                        CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction);
+                        result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction)).append("\n");
                     } else {
                         if (cmd.getArgumentAmount() == 1 && cmd.getNeedsObject()) {
                             Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
-                            CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction, vehicle);
+                            result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction, vehicle)).append("\n");
                         }
                         if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
                             if (cmd.getCmdLine().equals("execute_script")) {
-                                if (!paths.contains(arguments)) {
-                                    paths.add(arguments);
-                                    CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction);
+                                paths.forEach(System.out::println);
+                                if (!paths.contains(cmdArgument)) {
+                                    paths.add(cmdArgument);
+                                    result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction)).append("\n");
                                 } else {
                                     paths.clear();
                                     throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, т.к. возможна рекурсия");
                                 }
-                            }
-                            CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction);
+                            } else result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction)).append("\n");
                         }
                         if (cmd.getArgumentAmount() == 2 && cmd.getNeedsObject()) {
                             Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
-                            CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction, vehicle);
+                            result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction, vehicle)).append("\n");
                         }
                     }
                 }
                 paths.clear();
-                return ("Скрипт выполнен");
-            } else return "Скрипт не выполнен, что-то не так с файлом.";
+                result.append("Скрипт выполнен");
+                return result.toString();
+            } else result.append("Скрипт не выполнен, что-то не так с файлом.");
+                return result.toString();
         } catch (InvalidParameterException e) {
             paths.clear();
-            return ("Неверный скрипт");
+            result.append("Неверный скрипт");
+            return result.toString();
         } catch (FileNotFoundException e) {
             paths.clear();
-            return ("В качестве аргумента указан путь к несуществующему файлу");
+            result.append("В качестве аргумента указан путь к несуществующему файлу");
+            return result.toString();
         } catch (NoSuchElementException e) {
             paths.clear();
-            return ("Скрипт некорректен, проверьте верность введенных команд");
+            result.append("Скрипт некорректен, проверьте верность введенных команд");
+            return result.toString();
         } catch (InvalidAlgorithmParameterException e) {
-            return ("Выполнение скрипта остановлено, т.к. возможна рекурсия");
+            result.append("Выполнение скрипта остановлено, т.к. возможна рекурсия");
+            return result.toString();
         } catch (IncorrectValueException e) {
             e.printStackTrace();
         }
