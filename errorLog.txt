@@ -1,0 +1,8 @@
+java.security.InvalidAlgorithmParameterException: Выполнение скрипта остановлено, т.к. возможна рекурсия
+	at commands.ExecuteScript.execute(ExecuteScript.java:63)
+	at UI.CommandCenter.executeCommand(CommandCenter.java:97)
+	at commands.ExecuteScript.execute(ExecuteScript.java:60)
+	at UI.CommandCenter.executeCommand(CommandCenter.java:97)
+	at commands.ExecuteScript.execute(ExecuteScript.java:60)
+	at UI.CommandCenter.executeCommand(CommandCenter.java:97)
+	at Main.main(Main.java:74)
