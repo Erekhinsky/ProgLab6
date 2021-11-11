@@ -1,6 +1,5 @@
 package server.collection;
 
-import common.exception.InvalidInputException;
 import common.elementsOfCollection.Vehicle;
 
 import java.util.Date;
@@ -48,12 +47,9 @@ public class VehicleStorage {
     public static Boolean checkID(long id, Vector<Vehicle> vehicles) {
         final Boolean[] checker = {true};
         for (Vehicle vehicle : vehicles) {
-            if (vehicle.getId() != id) {
-                checker[0] = true;
-            } else try {
-                throw new InvalidInputException("Продукт с таким ID уже существует.");
-            } catch (InvalidInputException invalidInputException) {
-                invalidInputException.printStackTrace();
+            if (vehicle.getId() == id) {
+                checker[0] = false;
+                break;
             }
         }
         return checker[0];

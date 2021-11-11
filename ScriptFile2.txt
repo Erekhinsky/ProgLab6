@@ -1,7 +1,5 @@
 info
 remove_first
-show
-show
 add
 2
 2

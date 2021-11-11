@@ -1,4 +1,30 @@
 {
 	"vehicle" : [
+		{
+			"id": "1636645663",
+			"name": "2",
+			"coordinates": {
+				"x": "2.0",
+				"y": "2.0"
+			},
+			"creationDate": "2021-11-11",
+			"enginePower": "2",
+			"numberOfWheels": "2",
+			"distanceTravelled": "2.0",
+			"fuelType": "PLASMA"
+		},
+		{
+			"id": "1636645663",
+			"name": "2",
+			"coordinates": {
+				"x": "2.0",
+				"y": "2.0"
+			},
+			"creationDate": "2021-11-11",
+			"enginePower": "2",
+			"numberOfWheels": "2",
+			"distanceTravelled": "2.0",
+			"fuelType": "PLASMA",
+		}
 	]
 }

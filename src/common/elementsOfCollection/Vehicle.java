@@ -118,7 +118,7 @@ public class Vehicle implements Serializable {
                     "Мощность двигателя: " + getEnginePower() + "\n" +
                     "Число колёс транспорта: " + getNumberOfWheels() + "\n" +
                     "Пройденное расстояние: " + getDistanceTravelled() + "\n" +
-                    "Тип топлива: " + getFuelType() + "\n" + "\n"
+                    "Тип топлива: " + getFuelType() + "\n"
             );
     }
 
@@ -154,12 +154,8 @@ public class Vehicle implements Serializable {
      * @throws IncorrectValueException В случае ошибки ввода/вывода.
      */
     public void setId(long id) throws IncorrectValueException {
-        if (id > 0) this.id = id;
-        else throw new IncorrectValueException("Этот ID плохой: " + id);
-        if (VehicleStorage.checkID(id, VehicleStorage.vehicles)) {
+        if (VehicleStorage.checkID(id, VehicleStorage.vehicles) && id > 0) {
             this.id = id;
-        } else {
-            throw new IncorrectValueException("Продукт с таким ID уже существует ");
         }
     }
 

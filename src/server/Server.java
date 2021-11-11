@@ -9,18 +9,14 @@ import common.ui.CommandCenter;
 import common.ui.UserInterface;
 import server.collection.VehicleStorage;
 import server.interaction.StorageInteraction;
-import server.utils.Parser;
+import server.utils.FileHelper;
 
-import javax.crypto.spec.PSource;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -38,15 +34,19 @@ public class Server implements Runnable {
     public DatagramChannel datagramChannel;
     private Selector selector;
 
+    private static StringBuilder stringMessage = new StringBuilder();
+    static boolean firstOpen = true;
+
 
     public Server() {
         int PORT = 8700;
         this.socketAddress = new InetSocketAddress(PORT);
-        logger.log(Level.INFO, "Сервер начал работу." + "\n");
+        if (firstOpen) logger.log(Level.INFO, "Сервер начал работу." + "\n");
+        Server.firstOpen = false;
     }
 
     public static void main(String[] args) {
-        logger.log(Level.INFO, "commons.app.server Запущен." + "\n");
+        logger.log(Level.INFO, "commons.app.server запущен." + "\n");
         Server server = new Server();
         server.setArguments(args);
         server.run();
@@ -115,38 +115,23 @@ public class Server implements Runnable {
         try {
             path = arguments[0];
         } catch (ArrayIndexOutOfBoundsException e) {
-            try {
-                userInterface.showMessage("Файла нет.");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            System.out.println("Файла нет.");
             path = null;
             System.exit(0);
         }
-        Path p = Paths.get(path);
-        boolean exists = Files.exists(p);
-        boolean isDirectory = Files.isDirectory(p);
-        boolean isFile = Files.isRegularFile(p);
 
         try {
-            if (!exists || isDirectory || !isFile) {
-                throw new IllegalArgumentException();
-            }
-            storageInteraction = new StorageInteraction(vehicleStorage, arguments[0]);
+            storageInteraction = new StorageInteraction(vehicleStorage, path);
+            FileHelper.readFile(path, storageInteraction);
+
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                logger.log(Level.INFO, "Сохранение коллекции." + "\n");
+                Server.logger.log(Level.INFO, "Сохранение коллекции." + "\n");
                 try {
                     CommandCenter.getInstance().executeServerCommand(new Save(), storageInteraction);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }));
-            try {
-                VehicleStorage.vehicles = Parser.readArrayFromFile(Parser.initParser(arguments[0]));
-                logger.info("Коллекция создается на основе содержимого файла." + "\n");
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage());
-            }
 
             openChannel();
 
@@ -168,7 +153,11 @@ public class Server implements Runnable {
                         datagramChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                     }
                     if (key.isWritable()) {
-                        sendAnswer(executeCommand((Command) readRequest()));
+                        if (stringMessage != null){
+                            sendAnswer(stringMessage + "\n" + executeCommand((Command) readRequest()));
+                            stringMessage = null;
+                        }
+                        else sendAnswer(executeCommand((Command) readRequest()));
                         datagramChannel.register(selector, SelectionKey.OP_READ);
                     }
                     keyIterator.remove();
@@ -177,7 +166,15 @@ public class Server implements Runnable {
         } catch (IllegalArgumentException e) {
             logger.log(Level.SEVERE, "В аргументе команды нет пути к файлу или введено неверное имя пути." + "\n");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, e.getMessage()+ "\n");
         }
+    }
+
+    public static void setStringMessage(String sm) {
+        stringMessage.append(sm);
+    }
+
+    public static String getStringMessage() {
+        return stringMessage.toString();
     }
 }
