@@ -1,5 +1,6 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.ui.UserInterface;
 import server.interaction.StorageInteraction;
 
@@ -19,6 +20,7 @@ public class PrintFieldDescendingDistanceTravelled extends Command {
         options = "Нет параметров.";
         needsObject = false;
         argumentAmount = 0;
+        serverCommandLabel = false;
     }
 
     /**

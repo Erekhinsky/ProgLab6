@@ -1,11 +1,9 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.ui.UserInterface;
 import common.elementsOfCollection.Vehicle;
-import common.exception.IncorrectValueException;
 import server.interaction.StorageInteraction;
-
-import java.io.IOException;
 
 /**
  * Класс команды update.
@@ -21,6 +19,7 @@ public class Update extends Command {
         options = "Параметры: ID заменяемого объекта, Добавляемый объект";
         needsObject = true;
         argumentAmount = 2;
+        serverCommandLabel = false;
     }
 
     /**

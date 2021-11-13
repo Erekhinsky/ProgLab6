@@ -1,23 +1,25 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.ui.UserInterface;
 import common.elementsOfCollection.Vehicle;
 import server.interaction.StorageInteraction;
 
 /**
- * Класс команды remove_lower.
+ * Класс команды add_if_max.
  */
-public class RemoveLower extends Command {
+public class AddIfMax extends Command {
 
     /**
      * Стандартный конструктор, добавляющий строку вызова и описание команды.
      */
-    public RemoveLower() {
-        cmdLine = "remove_lower";
-        description = "удалить из коллекции все элементы, меньшие, чем заданный";
-        options = "Параметры: Сравниваемый объект";
+    public AddIfMax() {
+        cmdLine = "add_if_max";
+        description = "добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции";
+        options = "Параметры: Добавляемый объект";
         needsObject = true;
         argumentAmount = 1;
+        serverCommandLabel = false;
     }
 
     /**
@@ -28,10 +30,10 @@ public class RemoveLower extends Command {
     @Override
     public String execute(UserInterface ui, StorageInteraction storageInteraction, Vehicle vehicle) {
         int size1 = storageInteraction.getSize();
-        storageInteraction.removeLower(vehicle);
+        storageInteraction.addIfMax(vehicle);
         int size2 = storageInteraction.getSize();
-        if (size2 < size1)
+        if (size2 > size1) {
             return ("Операция успешно выполнена");
-        else return "Что-то пошло не так";
+        } else return ("Похоже, добавляемый объект меньше максимального или уже существует.");
     }
 }

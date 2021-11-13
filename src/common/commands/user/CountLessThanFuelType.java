@@ -1,5 +1,6 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.ui.UserInterface;
 import common.elementsOfCollection.FuelType;
 import server.interaction.StorageInteraction;
@@ -21,6 +22,7 @@ public class CountLessThanFuelType extends Command {
         options = "Параметры: Fuel Type:" + FuelType.getPossibleValues();
         needsObject = false;
         argumentAmount = 1;
+        serverCommandLabel = false;
     }
 
     /**

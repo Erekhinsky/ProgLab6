@@ -1,7 +1,7 @@
 package client;
 
 import common.SerializationTool;
-import common.commands.Command;
+import common.commands.abstracts.Command;
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
 import common.ui.CommandCenter;
@@ -45,6 +45,8 @@ public class Client {
 
     public void run() throws IOException, IncorrectValueException, ClassNotFoundException {
 
+        sendServerCommand(CommandCenter.getInstance().getCmdCommand("server_info"));
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите команду: (Введите \"help\" чтобы получить информацию о командах.)");
         String command = "";
@@ -52,7 +54,7 @@ public class Client {
             String[] input = scanner.nextLine().trim().split(" ");
             command = input[0];
             Command cmd = CommandCenter.getInstance().getCmdCommand(input[0]);
-            if (!(cmd == null)) {
+            if (!(cmd == null) && !cmd.getServerCommandLabel()) {
                 byte[] cmdByte;
                 if (cmd.getArgumentAmount() == 0) {
                     cmdByte = SerializationTool.serialize(cmd);
@@ -124,6 +126,14 @@ public class Client {
             }
         }
         return -1;
+    }
+
+    public void sendServerCommand(Command cmd) throws IOException {
+        byte[] cmdByte;
+        cmdByte = SerializationTool.serialize(cmd);
+        DatagramPacket packet = new DatagramPacket(Objects.requireNonNull(cmdByte), cmdByte.length, address);
+        socket.send(packet);
+        userInterface.showMessage(receive());
     }
 
 }

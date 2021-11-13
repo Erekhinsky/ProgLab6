@@ -1,5 +1,6 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.exception.IncorrectValueException;
 import common.ui.UserInterface;
 import common.elementsOfCollection.Vehicle;
@@ -19,6 +20,7 @@ public class Add extends Command {
         options = "Параметры: Добавляемый объект";
         needsObject = true;
         argumentAmount = 1;
+        serverCommandLabel = false;
     }
 
     /**

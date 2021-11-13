@@ -1,6 +1,6 @@
 package common.ui;
 
-import common.commands.Command;
+import common.commands.abstracts.Command;
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
 

@@ -1,7 +1,9 @@
 package common.ui;
 
-import common.commands.Command;
-import common.commands.*;
+import common.commands.abstracts.Command;
+import common.commands.server.Save;
+import common.commands.server.ServerInfo;
+import common.commands.user.*;
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
 import server.Server;
@@ -53,6 +55,7 @@ public class CommandCenter {
         addCmd(new RemoveById());
         addCmd(new PrintFieldDescendingDistanceTravelled());
         addCmd(new Save());
+        addCmd(new ServerInfo());
     }
 
     /**

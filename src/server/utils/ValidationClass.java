@@ -27,7 +27,7 @@ public class ValidationClass {
     public static boolean validateName(String value, boolean interaction, UserInterface ui) throws IOException {
         if (value.contains(" ")) {
             if (interaction) {
-                ui.showMessage("Это поле должно состоять из букв");
+                ui.showMessage("Это поле должно быть без пробелов");
             } else {
                 throw new InterruptedIOException();
             }
@@ -107,7 +107,9 @@ public class ValidationClass {
             if (value == null)
                 return false;
             else if (Long.parseLong(value) <= 0) {
-                ui.showMessage("Введенное значение должно быть больше 0.");
+                if (interaction) {
+                    ui.showMessage("Введенное значение должно быть больше 0.");
+                }
                 return false;
             } else {
                 try {
@@ -141,7 +143,9 @@ public class ValidationClass {
             if (value == null)
                 return false;
             else if (Float.parseFloat(value) <= 0) {
-                ui.showMessage("Введенное значение должно быть больше 0.");
+                if (interaction) {
+                    ui.showMessage("Введенное значение должно быть больше 0.");
+                }
                 return false;
             } else
                 try {

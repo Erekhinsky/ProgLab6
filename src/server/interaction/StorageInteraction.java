@@ -1,5 +1,6 @@
 package server.interaction;
 
+import server.Server;
 import server.collection.VehicleStorage;
 import common.elementsOfCollection.*;
 import common.exception.IncorrectValueException;

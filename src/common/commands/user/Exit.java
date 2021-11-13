@@ -1,36 +1,38 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.ui.UserInterface;
+import server.Server;
 import server.interaction.StorageInteraction;
 
 import java.io.IOException;
 
 /**
- * Класс команды show.
+ * Класс команды exit.
  */
-public class Show extends Command {
+public class Exit extends Command {
 
     /**
      * Стандартный конструктор, добавляющий строку вызова и описание команды.
      */
-    public Show() {
-        cmdLine = "show";
-        description = "вывести в стандартный поток вывода все элементы коллекции в строковом представлении";
+    public Exit() {
+        cmdLine = "exit";
+        description = "завершить программу";
         options = "Нет параметров.";
         needsObject = false;
         argumentAmount = 0;
+        serverCommandLabel = false;
     }
 
     /**
      * Метод исполнения
      *
      * @param ui объект, через который ведется взаимодействие с пользователем.
+     * @return Результат команды.
      */
+    @Override
     public String execute(UserInterface ui, StorageInteraction storageInteraction) throws IOException {
-        if (storageInteraction.getSize() == 0)
-            return ("Коллекция пуста");
-        else {
-            return ("Коллекция: " + storageInteraction.show());
-        }
+        System.exit(0);
+        return ("Завершение работы");
     }
 }

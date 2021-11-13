@@ -1,8 +1,8 @@
 package server;
 
 import common.SerializationTool;
-import common.commands.Command;
-import common.commands.Save;
+import common.commands.abstracts.Command;
+import common.commands.server.Save;
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
 import common.ui.CommandCenter;
@@ -83,23 +83,32 @@ public class Server implements Runnable {
         } else {
             if (cmd.getArgumentAmount() == 0) {
                 logger.log(Level.INFO, "Выполнение команды без аргументов - " + cmd.getCmdLine() + "\n");
-                return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction);
+                if (cmd.getServerCommandLabel())
+                    return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction);
+                else
+                    return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction) + "\nВведите команду:";
             }
             if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
                 logger.log(Level.INFO, "Выполнение команды с аргументом - " + cmd.getCmdLine() + "\n");
                 argument = cmd.getArgument();
-                return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction);
+                if (cmd.getServerCommandLabel())
+                    return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction);
+                else return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction) + "\nВведите команду:";
             }
             if (cmd.getArgumentAmount() == 1 && cmd.getNeedsObject()) {
                 logger.log(Level.INFO, "Выполнение команды с аргументом-объектом - " + cmd.getCmdLine() + "\n");
                 vehicle = cmd.getObject();
-                return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction, vehicle);
+                if (cmd.getServerCommandLabel())
+                    return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction, vehicle);
+                else return CommandCenter.getInstance().executeCommand(userInterface, cmd, storageInteraction, vehicle) + "\nВведите команду:";
             }
             if (cmd.getArgumentAmount() == 2 && cmd.getNeedsObject()) {
                 logger.log(Level.INFO, "Выполнение команды с аргументом и аргументом-объектом - " + cmd.getCmdLine() + "\n");
                 argument = cmd.getArgument();
                 vehicle = cmd.getObject();
-                return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction, vehicle);
+                if (cmd.getServerCommandLabel())
+                    return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction, vehicle);
+                else return CommandCenter.getInstance().executeCommand(userInterface, cmd, argument, storageInteraction, vehicle) + "\nВведите команду:";
             } else return "Слишком много аргументов.";
         }
     }
@@ -148,13 +157,14 @@ public class Server implements Runnable {
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
                 while (keyIterator.hasNext()) {
+                    Server.setStringMessage(null);
                     SelectionKey key = keyIterator.next();
                     if (key.isReadable()) {
                         datagramChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                     }
                     if (key.isWritable()) {
                         if (stringMessage != null){
-                            sendAnswer(stringMessage + "\n" + executeCommand((Command) readRequest()));
+                            sendAnswer(stringMessage + executeCommand((Command) readRequest()));
                             stringMessage = null;
                         }
                         else sendAnswer(executeCommand((Command) readRequest()));
@@ -171,7 +181,9 @@ public class Server implements Runnable {
     }
 
     public static void setStringMessage(String sm) {
-        stringMessage.append(sm);
+        if (sm != null){
+            stringMessage.append(sm);
+        }
     }
 
     public static String getStringMessage() {

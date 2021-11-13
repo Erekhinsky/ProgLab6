@@ -1,4 +1,4 @@
-package common.commands;
+package common.commands.abstracts;
 
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
@@ -27,7 +27,7 @@ public abstract class Command implements Serializable {
     protected String argument;
     protected Vehicle object;
     protected String options;
-
+    protected boolean serverCommandLabel;
 
     /**
      * Методы исполнения команды.
@@ -137,6 +137,10 @@ public abstract class Command implements Serializable {
      */
     public String getArgument() {
         return this.argument;
+    }
+
+    public boolean getServerCommandLabel() {
+        return serverCommandLabel;
     }
 
 }

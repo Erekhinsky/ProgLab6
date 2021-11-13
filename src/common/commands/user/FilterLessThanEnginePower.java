@@ -1,5 +1,6 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.exception.IncorrectValueException;
 import common.ui.UserInterface;
 import server.interaction.StorageInteraction;
@@ -21,6 +22,7 @@ public class FilterLessThanEnginePower extends Command {
         options = "Параметры: Мощность двигателя";
         needsObject = false;
         argumentAmount = 1;
+        serverCommandLabel = false;
     }
 
     /**

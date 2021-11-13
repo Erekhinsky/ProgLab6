@@ -1,10 +1,11 @@
-package common.commands;
+package common.commands.user;
 
+import common.commands.abstracts.Command;
 import common.elementsOfCollection.Vehicle;
 import common.exception.IncorrectValueException;
 import common.ui.CommandCenter;
-import common.ui.ScriptReader;
 import common.ui.UserInterface;
+import server.Server;
 import server.interaction.StorageInteraction;
 
 import java.io.*;
@@ -32,6 +33,7 @@ public class ExecuteScript extends Command {
         options = "Параметры: Путь к исполняемому файлу";
         needsObject = false;
         argumentAmount = 1;
+        serverCommandLabel = false;
     }
 
     /**
@@ -43,8 +45,6 @@ public class ExecuteScript extends Command {
     public String execute(UserInterface ui, String arguments, StorageInteraction storageInteraction) throws IOException {
 
         UserInterface scriptInteraction = new UserInterface(new FileReader(arguments), false, new OutputStreamWriter(System.out));
-
-//        ScriptReader.scriptRead(arguments);
 
         StringBuilder result = new StringBuilder();
         Path p = Paths.get(arguments);
@@ -65,30 +65,33 @@ public class ExecuteScript extends Command {
                         cmdArgument = null;
                     }
                     Command cmd = CommandCenter.getInstance().getCmdCommand(cmdLine);
-                    if (cmd.getArgumentAmount() == 0) {
-                        result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction)).append("\n");
-                    } else {
-                        if (cmd.getArgumentAmount() == 1 && cmd.getNeedsObject()) {
-                            Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
-                            result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction, vehicle)).append("\n");
-                        }
-                        if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
-                            if (cmd.getCmdLine().equals("execute_script")) {
-                                paths.forEach(System.out::println);
-                                if (!paths.contains(cmdArgument)) {
-                                    paths.add(cmdArgument);
+                    if (cmd != null) {
+                        if (cmd.getArgumentAmount() == 0) {
+                            result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction)).append("\n");
+                        } else {
+                            if (cmd.getArgumentAmount() == 1 && cmd.getNeedsObject()) {
+                                Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
+                                result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, storageInteraction, vehicle)).append("\n");
+                            }
+                            if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
+                                if (cmd.getCmdLine().equals("execute_script")) {
+                                    paths.forEach(System.out::println);
+                                    if (!paths.contains(cmdArgument)) {
+                                        paths.add(cmdArgument);
+                                        result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction)).append("\n");
+                                    } else {
+                                        paths.clear();
+                                        throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, т.к. возможна рекурсия");
+                                    }
+                                } else
                                     result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction)).append("\n");
-                                } else {
-                                    paths.clear();
-                                    throw new InvalidAlgorithmParameterException("Выполнение скрипта остановлено, т.к. возможна рекурсия");
-                                }
-                            } else result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction)).append("\n");
+                            }
+                            if (cmd.getArgumentAmount() == 2 && cmd.getNeedsObject()) {
+                                Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
+                                result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction, vehicle)).append("\n");
+                            }
                         }
-                        if (cmd.getArgumentAmount() == 2 && cmd.getNeedsObject()) {
-                            Vehicle vehicle = scriptInteraction.readVehicle(scriptInteraction);
-                            result.append(CommandCenter.getInstance().executeCommand(scriptInteraction, cmd, cmdArgument, storageInteraction, vehicle)).append("\n");
-                        }
-                    }
+                    } else result.append("Команда в скрипте: ").append(cmdLine).append(" не является командой\n");
                 }
                 paths.clear();
                 result.append("Скрипт выполнен");

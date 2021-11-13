@@ -53,7 +53,7 @@ public class Parser {
             if (ValidationClass.validateName((String) jsonObject1.get("name"), true, ui)) {
                 vehicle.setName((String) jsonObject1.get("name"));
             } else {
-                Server.setStringMessage("\nВ коллекции файла обнаружен объект с повторяющимся ID, он не будет добавлен \n");
+                Server.setStringMessage("\nВ объекте коллекции некорректно введено Название транспорта. \n");
                 errorCounter++;
                 continue;
             }
@@ -63,7 +63,7 @@ public class Parser {
                     ValidationClass.validateDouble((String) coordinates.get("y"), true, ui, false)) {
                 vehicle.setCoordinates(new Coordinates(Double.parseDouble((String) coordinates.get("x")), Double.parseDouble((String) coordinates.get("y"))));
             } else {
-                Server.setStringMessage("\nВ коллекции файла обнаружен объект с повторяющимся ID, он не будет добавлен \n");
+                Server.setStringMessage("\nВ объекте коллекции некорректно введены Координаты. \n");
                 errorCounter++;
                 continue;
             }
@@ -112,10 +112,9 @@ public class Parser {
         }
         if (errorCounter == 0){
             Server.setStringMessage("Файл с коллекцией считался корректно.\n");
-            return vehicles;
         } else {
             Server.setStringMessage("Количество объектов коллекции с ошибками: " + errorCounter + "\n");
-            return null;
         }
+        return vehicles;
     }
 }

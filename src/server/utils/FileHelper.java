@@ -1,7 +1,5 @@
 package server.utils;
 
-import common.commands.Save;
-import common.ui.CommandCenter;
 import server.Server;
 import server.collection.VehicleStorage;
 import server.interaction.StorageInteraction;
@@ -25,9 +23,6 @@ public class FileHelper {
             if (file.canWrite() && file.canRead()){
                 try {
                     VehicleStorage.vehicles = Parser.readArrayFromFile(Parser.initParser(path));
-
-                    System.out.println(Server.getStringMessage());
-
                     Server.logger.log(Level.INFO, "Коллекция создается на основе содержимого файла." + "\n");
                 } catch (Exception e) {
                     Server.logger.log(Level.SEVERE, "Был считан неверный JSON файл.\n");
