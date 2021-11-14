@@ -40,7 +40,7 @@ public class Client {
         String HOST = "localhost";
         address = new InetSocketAddress(HOST, PORT);
         socket = new DatagramSocket();
-        userInterface.showMessage("Произошло подключение");
+        userInterface.showMessage("Попытка подключения");
     }
 
     public void run() throws IOException, IncorrectValueException, ClassNotFoundException {
@@ -114,7 +114,7 @@ public class Client {
     public static int ask() {
         Scanner scanner = new Scanner(System.in);
         String answer;
-        System.out.println("Отправить команду снова? (\"Да\"/\"Нет\")");
+        System.out.println("Попробовать подключиться снова? (\"Да\"/\"Нет\")");
         while (scanner.hasNextLine()) {
             answer = scanner.nextLine();
             if (answer.equals("Да") || answer.equals("да")) {
