@@ -36,7 +36,7 @@ public class Client {
     }
 
     public void connect() throws IOException {
-        int PORT = 8700;
+        int PORT = 8725;
         String HOST = "localhost";
         address = new InetSocketAddress(HOST, PORT);
         socket = new DatagramSocket();
@@ -69,9 +69,6 @@ public class Client {
                 }
                 if (cmd.getArgumentAmount() == 1 && !cmd.getNeedsObject()) {
                     cmd.setArgument(userInterface.readArgument("Введите " + cmd.getOptions(), false));
-                    if (command.equals("execute_script")){
-
-                    }
                     cmdByte = SerializationTool.serialize(cmd);
                     send(cmdByte);
                     userInterface.showMessage(receive());

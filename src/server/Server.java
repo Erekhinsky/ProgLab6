@@ -39,7 +39,7 @@ public class Server implements Runnable {
 
 
     public Server() {
-        int PORT = 8700;
+        int PORT = 8725;
         this.socketAddress = new InetSocketAddress(PORT);
         if (firstOpen) logger.log(Level.INFO, "Сервер начал работу." + "\n");
         Server.firstOpen = false;
@@ -120,9 +120,9 @@ public class Server implements Runnable {
     }
 
     public void run() {
-        String path;
+        String path = "jsonFile.txt";
         try {
-            path = arguments[0];
+            System.getenv().get(path);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Файла нет.");
             path = null;
